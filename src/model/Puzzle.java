@@ -1,74 +1,25 @@
 package model;
 
+
+
 public class Puzzle extends Toy {
     private String puzzleType;
 
-    // Constructor
-    
-    public Puzzle(long serialNumber, String toyName, String brand, double price, int availableCount, int ageAppropriate, String puzzleType) {
-        super(serialNumber, toyName, brand, price, availableCount, ageAppropriate);
+    public Puzzle(long serialNumber, String name, String brand, double price, int availableCount, int ageAppropriate, String puzzleType) {
+        super(serialNumber, name, brand, price, availableCount, ageAppropriate);
         this.puzzleType = puzzleType;
     }
-
-    // Getters and setters
-//    public void setPuzzleType(String puzzleType) {
-//        this.puzzleType = puzzleType;
-//    }
-
+    
     public String getPuzzleType() {
-        return puzzleType;
+    	return puzzleType;
     }
 
-    // Override formatToyInfo method
-    
-    public String formatToyInfo() {
-        String category = "Puzzle";
-        String[] fields = {
-                String.valueOf(getSerialNumber()),
-                getToyName(),
-                getBrand(),
-                String.valueOf(getPrice()),
-                String.valueOf(getAvailableCount()),
-                String.valueOf(getAgeAppropriate()),
-                puzzleType
-        };
-        return FormatToyInfo.format(category, fields);
+    @Override
+    public String toString() {
+        return "Puzzle: " + name + " (Serial Number: " + serialNumber + ", Brand: " + brand + ", Price: " + price +
+                ", Available Count: " + availableCount + ", Age Appropriate: " + ageAppropriate +
+                ", Puzzle Type: " + puzzleType + ")";
     }
 }
 
-// Subclass representing a puzzle toy
-//public class Puzzle extends Toy {
-//    // Additional field specific to Puzzle
-//    private String puzzleType;
-//
-//    // Constructors
-//    public Puzzle(long serialNumber, String toyName, String brand, double price, int availableCount, int ageAppropriate, String puzzleType) {
-//        // Call the constructor of the superclass (Toy)
-//        super(serialNumber, toyName, brand, price, availableCount, ageAppropriate);
-//        this.puzzleType = puzzleType;
-//    }
-//
-//    // Getters
-//    public String getPuzzleType() {
-//        return puzzleType;
-//    }
-//
-//    // Setters
-//    public void setPuzzleType(String puzzleType) {
-//        this.puzzleType = puzzleType;
-//    }
-//
-//    // Other necessary methods
-//    // TODO: Add other methods as needed
-//    public String toString() {
-//        return "Puzzle{" +
-//                "serialNumber=" + getSerialNumber() +
-//                ", toyName='" + getToyName() + '\'' +
-//                ", brand='" + getBrand() + '\'' +
-//                ", price=" + getPrice() +
-//                ", availableCount=" + getAvailableCount() +
-//                ", ageAppropriate=" + getAgeAppropriate() +
-//                ", puzzleType='" + getPuzzleType() + '\'' +
-//                '}';
-//    }
-//}
+

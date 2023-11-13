@@ -76,13 +76,14 @@ public class AppManager {
     }
 
     private void searchByType() {
-        Scanner input = new Scanner(System.in);
-        System.out.print("Enter the type of toy to search for: ");
-        String typeToSearch = input.nextLine().toLowerCase();
+        List<String> searchResults = new ArrayList<>();
+        boolean returnToSearch = true;
 
         try {
             BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH));
-            List<String> searchResults = new ArrayList<>();
+            Scanner input = new Scanner(System.in);
+            System.out.print("Enter the type of toy to search for: ");
+            String typeToSearch = input.nextLine().toLowerCase();
 
             String line;
             int resultIndex = 1;
@@ -92,8 +93,15 @@ public class AppManager {
                 if (fields.length >= 7) { // Assuming type is stored in the 7th field
                     String toyType = fields[6].toLowerCase();
                     if (toyType.contains(typeToSearch)) {
-                        String category = categorizeSerialNumber(Long.parseLong(fields[0]));
-                        String formattedInfo = FormatToyInfo.format(category, fields);
+                        // Categorize the toy based on its serial number
+                        long serialNumber = Long.parseLong(fields[0]);
+                        String category = categorizeSerialNumber(serialNumber);
+
+                        // Create the corresponding toy object based on its category
+                        Toy toy = createToy(category, fields);
+
+                        // Format the toy information using FormatToyInfo
+                        String formattedInfo = FormatToyInfo.format(category, toy);
                         searchResults.add("(" + resultIndex + ") " + formattedInfo);
                         System.out.println(searchResults.get(resultIndex - 1));
                         resultIndex++;
@@ -108,21 +116,24 @@ public class AppManager {
                 System.out.println("(" + resultIndex + ") Back to Main Menu");
 
                 // Now, you can handle the user's selection for purchase or going back to the main menu
-                System.out.print("Enter Option Number to Purchase or Back to Main Menu: ");
-                int userOption = input.nextInt();
+                while (returnToSearch) {
+                    System.out.print("Enter Option Number to Purchase or Back to Main Menu: ");
+                    int userOption = input.nextInt();
 
-                if (userOption >= 1 && userOption <= searchResults.size() - 1) {
-                    System.out.println("The Transaction Successfully Terminated!");
-                    // You can add purchase logic here
-                    System.out.print("\nPress Enter to Continue...");
-                    input.nextLine(); // Consume the newline character
-                    input.nextLine(); // Wait for Enter key press
-                    appMenu.subMenu();
-                } else if (userOption == searchResults.size()) {
-                    // User selected "Back to Main Menu"
-                    // The user wants to go back to the main menu, no action needed here
-                } else {
-                    System.out.println("Invalid input. Please try again.");
+                    if (userOption >= 1 && userOption <= searchResults.size() - 1) {
+                        System.out.println("The Transaction Successfully Terminated!");
+                        // You can add purchase logic here
+                        System.out.print("\nPress Enter to Continue...");
+                        input.nextLine(); // Consume the newline character
+                        input.nextLine(); // Wait for Enter key press
+                        appMenu.subMenu();
+                        returnToSearch = false;
+                    } else if (userOption == searchResults.size()) {
+                        // User selected "Back to Main Menu"
+                        returnToSearch = false;
+                    } else {
+                        System.out.println("Invalid input. Please try again.");
+                    }
                 }
             } else {
                 System.out.println("No toys found with the specified type.");
@@ -132,12 +143,14 @@ public class AppManager {
             System.err.println("Failed to search for toys by type.");
         }
     }
+
     
 
 
     private void searchByToyName() {
-        List<String> searchResults = new ArrayList<>();
+    	List<String> searchResults = new ArrayList<>();
         boolean returnToSearch = true;
+
         try {
             BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH));
             Scanner input = new Scanner(System.in);
@@ -153,8 +166,14 @@ public class AppManager {
                     String name = fields[1].toLowerCase();
                     long serialNumber = Long.parseLong(fields[0]);
                     if (name.startsWith(userInput)) {
+                        // Categorize the toy based on its serial number
                         String category = categorizeSerialNumber(serialNumber);
-                        String formattedInfo = FormatToyInfo.format(category, fields);
+
+                        // Create the corresponding toy object based on its category
+                        Toy toy = createToy(category, fields);
+
+                        // Format the toy information using FormatToyInfo
+                        String formattedInfo = FormatToyInfo.format(category, toy);
                         searchResults.add("(" + resultIndex + ") " + formattedInfo);
                         System.out.println(searchResults.get(resultIndex - 1));
                         resultIndex++;
@@ -164,133 +183,115 @@ public class AppManager {
             reader.close();
             searchResults.add("(" + resultIndex + ") Back to Main Menu");
             System.out.println("(" + resultIndex + ") Back to Main Menu");
-
             while (returnToSearch) {
-                System.out.print("Enter Option Number to Purchase or Back to Main Menu: ");
-                int userOption = input.nextInt();
+              System.out.print("Enter Option Number to Purchase or Back to Main Menu: ");
+              int userOption = input.nextInt();
 
-                if (userOption >= 1 && userOption <= searchResults.size() - 1) {
-                    System.out.println("The Transaction Successfully Terminated!");
-                    // You can add purchase logic here
-                    System.out.print("\nPress Enter to Continue...");
-                    input.nextLine(); // Consume the newline character
-                    input.nextLine(); // Wait for Enter key press
-                    appMenu.subMenu();
-                    returnToSearch = false;
-                } else if (userOption == searchResults.size()) {
-                    // User selected "Back to Main Menu"
-                    returnToSearch = false;
+              if (userOption >= 1 && userOption <= searchResults.size() - 1) {
+                  System.out.println("The Transaction Successfully Terminated!");
+                  // You can add purchase logic here
+                  System.out.print("\nPress Enter to Continue...");
+                  input.nextLine(); // Consume the newline character
+                  input.nextLine(); // Wait for Enter key press
+                  appMenu.subMenu();
+                  returnToSearch = false;
+              } else if (userOption == searchResults.size()) {
+                  // User selected "Back to Main Menu"
+                  returnToSearch = false;
+              } else {
+                  System.out.println("Invalid input. Please try again.");
+              }
+          }
+      } catch (IOException e) {
+          e.printStackTrace();
+          System.err.println("Failed to search for toys by name.");
+      }
+        
+    }
+    private void searchBySerialNumber() {
+        List<String> searchResults = new ArrayList<>();
+        boolean returnToSearch = true;
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH));
+            Scanner input = new Scanner(System.in);
+
+            // Prompt the user to enter a valid serial number
+            String userInput;
+            boolean isValidInput = false;
+
+            while (!isValidInput) {
+                System.out.print("Enter Serial Number (10 digits only): ");
+                userInput = input.nextLine();
+
+                // Validate that the input consists of exactly 10 digits
+                if (Pattern.matches("\\d{10}", userInput)) {
+                    isValidInput = true;
+                    long serialNumber = Long.parseLong(userInput);
+
+                    String line;
+                    int resultIndex = 1;
+
+                    while ((line = reader.readLine()) != null) {
+                        String[] fields = line.split(";");
+                        if (fields.length >= 2) {
+                            long currentSerialNumber = Long.parseLong(fields[0]);
+                            if (currentSerialNumber == serialNumber) {
+                                // Categorize the toy based on its serial number
+                                String category = categorizeSerialNumber(serialNumber);
+
+                                // Creating the corresponding toy object based on its category
+                                Toy toy = createToy(category, fields);
+
+                                // Format the toy information using FormatToyInfo
+                                String formattedInfo = FormatToyInfo.format(category, toy);
+                                searchResults.add("(" + resultIndex + ") " + formattedInfo);
+                                System.out.println(searchResults.get(resultIndex - 1));
+                                resultIndex++;
+                            }
+                        }
+                    }
+
+                    if (!searchResults.isEmpty()) {
+                        searchResults.add("(" + resultIndex + ") Back to Main Menu");
+                        System.out.println("(" + resultIndex + ") Back to Main Menu");
+
+                        // Now, you can handle the user's selection for purchase or going back to the main menu
+                        while (returnToSearch) {
+                            System.out.print("Enter Option Number to Purchase or Back to Main Menu: ");
+                            int userOption = input.nextInt();
+
+                            if (userOption >= 1 && userOption <= searchResults.size() - 1) {
+                                System.out.println("The Transaction Successfully Terminated!");
+                                // You can add purchase logic here
+                                System.out.print("\nPress Enter to Continue...");
+                                input.nextLine(); // Consume the newline character
+                                input.nextLine(); // Wait for Enter key press
+                                appMenu.subMenu();
+                                returnToSearch = false;
+                            } else if (userOption == searchResults.size()) {
+                                // User selected "Back to Main Menu"
+                                returnToSearch = false;
+                            } else {
+                                System.out.println("Invalid input. Please try again.");
+                            }
+                        }
+                    } else {
+                        System.out.println("No such Toy in Inventory.");
+                    }
                 } else {
-                    System.out.println("Invalid input. Please try again.");
+                    System.out.println("Invalid input. Please enter exactly 10 digits.");
                 }
             }
+
+            reader.close();
         } catch (IOException e) {
             e.printStackTrace();
-            System.err.println("Failed to search for toys by name.");
+            System.err.println("Failed to search for toys by serial number.");
         }
     }
 
-    private void searchBySerialNumber() {
-    	 Scanner input = new Scanner(System.in);
 
-    	    // Prompt the user to enter a valid serial number
-    	    String userInput;
-    	    boolean isValidInput = false;
-
-    	    while (!isValidInput) {
-    	        System.out.print("Enter Serial Number (10 digits only): ");
-    	        userInput = input.nextLine();
-
-    	        // Validate that the input consists of exactly 10 digits
-    	        if (Pattern.matches("\\d{10}", userInput)) {
-    	            isValidInput = true;
-    	            long serialNumber = Long.parseLong(userInput);
-
-    	            List<String> searchResults = new ArrayList<>();
-    	            try {
-    	                BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH));
-    	                
-    	                String line;
-    	                int resultIndex = 1;
-
-    	                while ((line = reader.readLine()) != null) {
-    	                    String[] fields = line.split(";");
-    	                    if (fields.length >= 2) {
-    	                        long currentSerialNumber = Long.parseLong(fields[0]);
-    	                        if (currentSerialNumber == serialNumber) {
-    	                            String category = categorizeSerialNumber(serialNumber);
-    	                            String formattedInfo = FormatToyInfo.format(category, fields);
-    	                            searchResults.add("(" + resultIndex + ") " + formattedInfo);
-    	                            System.out.println(searchResults.get(resultIndex - 1));
-    	                            resultIndex++;
-    	                        }
-    	                    }
-    	                }
-
-    	                reader.close();
-
-    	                if (!searchResults.isEmpty()) {
-    	                    searchResults.add("(" + resultIndex + ") Back to Main Menu");
-    	                    System.out.println("(" + resultIndex + ") Back to Main Menu");
-
-    	                    // Now, you can handle the user's selection for purchase or going back to the main menu
-    	                    System.out.print("Enter Option Number to Purchase or Back to Main Menu: ");
-    	                    int userOption = input.nextInt();
-
-    	                    if (userOption >= 1 && userOption <= searchResults.size() - 1) {
-    	                        System.out.println("The Transaction Successfully Terminated!");
-    	                        // You can add purchase logic here
-    	                        System.out.print("\nPress Enter to Continue...");
-    	                        input.nextLine(); // Consume the newline character
-    	                        input.nextLine(); // Wait for Enter key press
-    	                        appMenu.subMenu();
-    	                    } else if (userOption == searchResults.size()) {
-    	                        // User selected "Back to Main Menu"
-    	                        // The user wants to go back to the main menu, no action needed here
-    	                    } else {
-    	                        System.out.println("Invalid input. Please try again.");
-    	                    }
-    	                } else {
-    	                    System.out.println("No such Toy in Inventory.");
-    	                }
-    	            } catch (IOException e) {
-    	                e.printStackTrace();
-    	                System.err.println("Failed to search for toys by serial number.");
-    	            }
-    	        } else {
-    	            System.out.println("Invalid input. Please enter exactly 10 digits.");
-    	        }
-    	    }
-    	
-//        Scanner input = new Scanner(System.in);
-//        System.out.print("Enter Serial Number: ");
-//        long serialNumberToSearch = input.nextLong();
-//
-//        try {
-//            BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH));
-//            String line;
-//
-//            while ((line = reader.readLine()) != null) {
-//                String[] fields = line.split(";");
-//                if (fields.length >= 1) {
-//                    long serialNumber = Long.parseLong(fields[0]);
-//                    if (serialNumber == serialNumberToSearch) {
-//                        String category = categorizeSerialNumber(serialNumber);
-//                        String formattedInfo = FormatToyInfo.format(category, fields);
-//                        System.out.println("Toy found:\n" + formattedInfo);
-//                        reader.close();
-//                        return;
-//                    }
-//                }
-//            }
-//
-//            System.out.println("No toy found with the specified serial number.");
-//            reader.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            System.err.println("Failed to search for toys by serial number.");
-//        }
-    }
     private void addToy() {
         Scanner input = new Scanner(System.in);
 
@@ -361,7 +362,7 @@ public class AppManager {
         try {
             FileWriter writer = new FileWriter(FILE_PATH, true);
             writer.write(System.lineSeparator());
-            writer.write(serialnumber + ";" + toyname + ";" + brand + ";" + price + ";" + count + ";" + age + ";" + num_of_min_players + ";" + num_of_max_players + ";" + author);
+            writer.write(serialnumber + ";" + toyname + ";" + brand + ";" + price + ";" + count + ";" + age + ";" + num_of_min_players + "-" + num_of_max_players + ";" + author);
             writer.close();
             System.out.println("Content has been written to the file.");
         } catch (IOException e) {
@@ -396,25 +397,97 @@ public class AppManager {
     }
 
 
-	private void removeToy() {
-        // Implement toy removal logic here
-        // You may want to read the file, display a list of toys, and ask the user which one to remove
-        // Then, update the file without the removed toy
-        // Make sure to handle potential exceptions
+    private void removeToy() {
+        Scanner input = new Scanner(System.in);
+        System.out.println("Removing a Toy");
 
-        System.out.println("Remove Toy functionality is not implemented yet.");
-    }
+        long serialNumberRemoval;
 
-    private void writeToFile(Toy toy) {
+        // Keep prompting until a valid serial number is entered
+        while (true) {
+            System.out.print("Enter the Serial Number of the toy to remove: ");
+            String serialInput = input.nextLine();
+
+            // Validate that the input consists only of digits and has exactly 10 digits
+            if (Pattern.matches("\\d{10}", serialInput)) {
+                serialNumberRemoval = Long.parseLong(serialInput);
+                break; // Exit the loop if a valid serial number is entered
+            } else {
+                System.out.println("Invalid input. Please enter a 10-digit serial number.");
+            }
+        }
+
         try {
-            FileWriter writer = new FileWriter(FILE_PATH, true);
-            writer.write(toy.toString());
+            BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH));
+            List<String> lines = new ArrayList<>();
+            String line;
+            boolean toyFound = false;
+
+            while ((line = reader.readLine()) != null) {
+                String[] fields = line.split(";");
+                if (fields.length >= 2) {
+                    long serialNumber = Long.parseLong(fields[0]);
+                    if (serialNumber == serialNumberRemoval) {
+                        // Display the details of the toy to be removed
+                        toyFound = true;
+                        String category = categorizeSerialNumber(serialNumber);
+                        Toy toy = createToy(category, fields);
+                        String formattedInfo = FormatToyInfo.format(category, toy);
+                        System.out.println("This Item Found:");
+                        System.out.println(formattedInfo);
+
+                        // Confirm removal
+                        System.out.print("Do you want to remove it (Y/N)? ");
+                        char confirmation = input.next().charAt(0);
+                        if (Character.toLowerCase(confirmation) == 'y') {
+                            System.out.println("Item Removed!");
+                        } else {
+                            System.out.println("Removal Cancelled.");
+                            return; // Exit the method if removal is cancelled
+                        }
+                    } else {
+                        lines.add(line);
+                    }
+                }
+            }
+
+            reader.close();
+
+            if (!toyFound) {
+                System.out.println("No toy found with the specified serial number.");
+                return; // Exit the method if the toy is not found
+            }
+
+            // Write the updated contents back to the file
+            FileWriter writer = new FileWriter(FILE_PATH);
+            for (String updatedLine : lines) {
+                writer.write(updatedLine + System.lineSeparator());
+            }
             writer.close();
+
+            // Display a message and wait for Enter key press
+            System.out.println("Press Enter to continue...");
+            input.nextLine(); // Consume the newline character
+            input.nextLine(); // Wait for Enter key press
+
         } catch (IOException e) {
             e.printStackTrace();
-            System.err.println("Failed to write toy to file.");
+            System.err.println("Failed to remove the toy from the inventory.");
         }
     }
+
+
+
+//    private void writeToFile(Toy toy) {
+//        try {
+//            FileWriter writer = new FileWriter(FILE_PATH, true);
+//            writer.write(toy.toString());
+//            writer.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            System.err.println("Failed to write toy to file.");
+//        }
+//    }
 
     private String categorizeSerialNumber(long serialNumber) {
         String category;
@@ -447,6 +520,71 @@ public class AppManager {
 
         return category;
     }
+    
+    private Toy createToy(String category, String[] fields) {
+        switch (category.toLowerCase()) {
+            case "boardgame":
+                return createBoardGame(fields);
+            case "figure":
+                return createFigure(fields);
+            case "animal":
+                return createAnimal(fields);
+            case "puzzle":
+                return createPuzzle(fields);
+            default:
+                return null; // Handle unknown category
+        }
+    }
+
+	private Toy createPuzzle(String[] fields) {
+		return new Puzzle(
+                Long.parseLong(fields[0]),
+                fields[1],
+                fields[2],
+                Double.parseDouble(fields[3]),
+                Integer.parseInt(fields[4]),
+                Integer.parseInt(fields[5]),
+                fields[6]
+        );
+	}
+
+	private Toy createAnimal(String[] fields) {
+		return new Animal(
+                Long.parseLong(fields[0]),
+                fields[1],
+                fields[2],
+                Double.parseDouble(fields[3]),
+                Integer.parseInt(fields[4]),
+                Integer.parseInt(fields[5]),
+                fields[6],
+                fields[7]
+        );
+	}
+
+	private Toy createFigure(String[] fields) {
+		return new Figure(
+                Long.parseLong(fields[0]),
+                fields[1],
+                fields[2],
+                Double.parseDouble(fields[3]),
+                Integer.parseInt(fields[4]),
+                Integer.parseInt(fields[5]),
+                fields[6]
+        );
+	}
+
+	private Toy createBoardGame(String[] fields) {
+		  return new BoardGame(
+	                Long.parseLong(fields[0]),
+	                fields[1],
+	                fields[2],
+	                Double.parseDouble(fields[3]),
+	                Integer.parseInt(fields[4]),
+	                Integer.parseInt(fields[5]),
+	                fields[6],
+	                fields[7]
+	        );
+	}
 
 
 

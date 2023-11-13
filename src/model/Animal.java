@@ -5,44 +5,33 @@ public class Animal extends Toy {
     private String material;
     private String size;
 
-    // Constructor
-    
-    public Animal(long serialNumber, String toyName, String brand, double price, int availableCount, int ageAppropriate, String material, String size) {
-        super(serialNumber, toyName, brand, price, availableCount, ageAppropriate);
+    public Animal(long serialNumber, String name, String brand, double price, int availableCount, int ageAppropriate, String material, String size) {
+        super(serialNumber, name, brand, price, availableCount, ageAppropriate);
         this.material = material;
         this.size = size;
     }
-    
-//    public void setMaterial(String material) {
-//        this.material = material;
-//    }
-//    public void setSize(String size) {
-//        this.size = size;
-//    }
-
-    // Getters and setters
     public String getMaterial() {
-        return material;
-    }
+      return material;
+  }
 
-    public String getSize() {
-        return size;
-    }
+  public String getSize() {
+      return size;
+  }
 
-    // Override formatToyInfo method
-    public String formatToyInfo() {
-        String category = "Animal";
-        String[] fields = {
-                String.valueOf(getSerialNumber()),
-                getToyName(),
-                getBrand(),
-                String.valueOf(getPrice()),
-                String.valueOf(getAvailableCount()),
-                String.valueOf(getAgeAppropriate()),
-                material,
-                size
-        };
-        return FormatToyInfo.format(category, fields);
+  // Setters
+  public void setMaterial(String material) {
+      this.material = material;
+  }
+
+  public void setSize(String size) {
+      this.size = size;
+  }
+
+    @Override
+    public String toString() {
+        return "Animal: " + name + " (Serial Number: " + serialNumber + ", Brand: " + brand + ", Price: " + price +
+                ", Available Count: " + availableCount + ", Age Appropriate: " + ageAppropriate +
+                ", Material: " + material + ", Size: " + size + ")";
     }
 }
 
