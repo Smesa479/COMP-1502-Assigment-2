@@ -2,16 +2,26 @@ package view;
 
 import java.util.Scanner;
 
-// Class responsible for displaying the application menu
+/**
+ * Class responsible for displaying the application menu.
+ */
 public class AppMenu {
     private Scanner input;
 
-    // Constructor
+    /**
+     * Constructor for the AppMenu class.
+     *
+     * @param input The Scanner object used for user input.
+     */
     public AppMenu(Scanner input) {
         this.input = input;
     }
 
-    // Display the main menu and get the user's choice
+    /**
+     * Display the main menu and get the user's choice.
+     *
+     * @return The user's choice as integer.
+     */
     public int mainMenu() {
         int option = -1;
         boolean validInput = false;
@@ -34,7 +44,11 @@ public class AppMenu {
         return option;
     }
 
-    // Display the submenu and get the user's choice
+    /**
+     * Display the submenu and get the user's choice.
+     *
+     * @return The user's choice as an integer.
+     */
     public int subMenu() {
         System.out.println("Find Toys With: ");
         System.out.println("(1) Serial Number(SN)");
@@ -45,7 +59,9 @@ public class AppMenu {
         return input.nextInt();
     }
 
-    // Close the Scanner
+    /**
+     * Close the Scanner used for input.
+     */
     public void closeScanner() {
         input.close();
     }

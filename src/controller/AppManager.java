@@ -17,20 +17,30 @@ import model.Figure;
 import model.FormatToyInfo;
 import view.AppMenu;
 
-// Class responsible for managing the application logic
+/**
+ * Class responsible for managing the application logic.
+ */
 public class AppManager {
     private final String FILE_PATH = "res/toys.txt";
     private AppMenu appMenu;
     private Toy toy;
     private Scanner scanner;
-
+    
+    /**
+     * Constructor for the AppManager class.
+     *
+     * @param scanner The Scanner object for user input.
+     */
     public AppManager(Scanner scanner) {
         this.appMenu = new AppMenu(scanner);
         this.scanner = scanner;
         
         launchApplication();
     }
-
+    
+    /**
+     * Launches the main application loop.
+     */
     private void launchApplication() {
         boolean flag = true;
         int option;
@@ -74,7 +84,9 @@ public class AppManager {
             }
         }
     }
-
+    /**
+     * Searches for toys based on their type.
+     */
     private void searchByType() {
         List<String> searchResults = new ArrayList<>();
         boolean returnToSearch = true;
@@ -146,7 +158,9 @@ public class AppManager {
 
     
 
-
+    /**
+     * Searches for toys based on their name.
+     */
     private void searchByToyName() {
     	List<String> searchResults = new ArrayList<>();
         boolean returnToSearch = true;
@@ -208,6 +222,9 @@ public class AppManager {
       }
         
     }
+    /**
+     * Searches for toys based on their serial number.
+     */
     private void searchBySerialNumber() {
         List<String> searchResults = new ArrayList<>();
         boolean returnToSearch = true;
@@ -234,7 +251,7 @@ public class AppManager {
 
                     while ((line = reader.readLine()) != null) {
                         String[] fields = line.split(";");
-                        if (fields.length >= 2) {
+                        if (fields.length >= 1) {
                             long currentSerialNumber = Long.parseLong(fields[0]);
                             if (currentSerialNumber == serialNumber) {
                                 // Categorize the toy based on its serial number
@@ -291,7 +308,11 @@ public class AppManager {
         }
     }
 
-
+    /**
+     * Adds a new toy to the inventory.
+     *
+     * @return True if the toy is successfully added, false otherwise.
+     */
     private void addToy() {
         Scanner input = new Scanner(System.in);
 
@@ -371,7 +392,12 @@ public class AppManager {
         }
     }
 
-
+    /**
+     * Checks if a given serial number is unique in the inventory.
+     *
+     * @param serialNumber The serial number to check.
+     * @return True if the serial number is unique, false if it already exists in the inventory.
+     */
     private boolean isSerialNumberUnique(long serialNumber) {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH));
@@ -395,8 +421,13 @@ public class AppManager {
 
         return true; // Serial number is unique
     }
-
-
+    
+    
+    /**
+     * Removes a toy from the inventory based on its serial number.
+     *
+     * @throws IOException If an I/O error occurs.
+     */
     private void removeToy() {
         Scanner input = new Scanner(System.in);
         System.out.println("Removing a Toy");
@@ -478,17 +509,13 @@ public class AppManager {
 
 
 
-//    private void writeToFile(Toy toy) {
-//        try {
-//            FileWriter writer = new FileWriter(FILE_PATH, true);
-//            writer.write(toy.toString());
-//            writer.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            System.err.println("Failed to write toy to file.");
-//        }
-//    }
 
+    /**
+     * Categorizes a serial number into a toy category based on its first digit.
+     *
+     * @param serialNumber The serial number to categorize.
+     * @return The category of the toy (e.g., "Figure", "Animal", "Puzzle", "BoardGame", or "Unknown").
+     */
     private String categorizeSerialNumber(long serialNumber) {
         String category;
 
@@ -521,6 +548,13 @@ public class AppManager {
         return category;
     }
     
+    /**
+     * Creates a toy object based on the specified category and field values.
+     *
+     * @param category The category of the toy.
+     * @param fields   The array of fields containing toy information.
+     * @return A toy object representing the specified category, or null if the category is unknown.
+     */
     private Toy createToy(String category, String[] fields) {
         switch (category.toLowerCase()) {
             case "boardgame":
@@ -535,7 +569,13 @@ public class AppManager {
                 return null; // Handle unknown category
         }
     }
-
+    
+    /**
+     * Creates a Puzzle object from the given array of fields.
+     *
+     * @param fields The array of fields containing puzzle information.
+     * @return A Puzzle object with the specified information.
+     */
 	private Toy createPuzzle(String[] fields) {
 		return new Puzzle(
                 Long.parseLong(fields[0]),
@@ -547,7 +587,12 @@ public class AppManager {
                 fields[6]
         );
 	}
-
+	/**
+	 * Creates an Animal object from the given array of fields.
+	 *
+	 * @param fields The array of fields containing animal information.
+	 * @return An Animal object with the specified information.
+	 */
 	private Toy createAnimal(String[] fields) {
 		return new Animal(
                 Long.parseLong(fields[0]),
@@ -560,7 +605,12 @@ public class AppManager {
                 fields[7]
         );
 	}
-
+	/**
+	 * Creates a Figure object from the given array of fields.
+	 *
+	 * @param fields The array of fields containing figure information.
+	 * @return A Figure object with the specified information.
+	 */
 	private Toy createFigure(String[] fields) {
 		return new Figure(
                 Long.parseLong(fields[0]),
@@ -572,8 +622,14 @@ public class AppManager {
                 fields[6]
         );
 	}
-
+	/**
+	 * Creates a BoardGame object from the given array of fields.
+	 *
+	 * @param fields The array of fields containing board game information.
+	 * @return A BoardGame object with the specified information.
+	 */
 	private Toy createBoardGame(String[] fields) {
+		
 		  return new BoardGame(
 	                Long.parseLong(fields[0]),
 	                fields[1],

@@ -1,10 +1,18 @@
-
-
 package model;
 
+/**
+ * The FormatToyInfo class provides static methods to format information about different types of toys.
+ */
 public class FormatToyInfo {
+	
+	/**
+     * Formats the information for a specific category of toy.
+     *
+     * @param category The category of the toy.
+     * @param toy      The toy to format.
+     * @return A formatted string containing information about the toy.
+     */
     public static String format(String category, Toy toy) {
-        // ... other code
 
         switch (category.toLowerCase()) {
             case "boardgame":
@@ -20,7 +28,13 @@ public class FormatToyInfo {
                 return "Unknown category. Additional details not provided.";
         }
     }
-
+    
+    /**
+     * Formats the information for a BoardGame toy.
+     *
+     * @param toy The BoardGame toy to format.
+     * @return A formatted string containing information about the BoardGame toy.
+     */
     private static String formatBoardGame(BoardGame toy) {
         StringBuilder formattedInfo = new StringBuilder("Category: BoardGame, ");
         formattedInfo.append("Serial Number: ").append(toy.getSerialNumber())
@@ -34,7 +48,13 @@ public class FormatToyInfo {
 
         return formattedInfo.toString();
     }
-
+    
+    /**
+     * Formats the information for a Figure toy.
+     *
+     * @param toy The Figure toy to format.
+     * @return A formatted string containing information about the Figure toy.
+     */
     private static String formatFigure(Figure toy) {
         StringBuilder formattedInfo = new StringBuilder("Category: Figure, ");
         formattedInfo.append("Serial Number: ").append(toy.getSerialNumber())
@@ -47,7 +67,12 @@ public class FormatToyInfo {
 
         return formattedInfo.toString();
     }
-
+    /**
+     * Formats the information for an Animal toy.
+     *
+     * @param toy The Animal toy to format.
+     * @return A formatted string containing information about the Animal toy.
+     */
     private static String formatAnimal(Animal toy) {
         StringBuilder formattedInfo = new StringBuilder("Category: Animal, ");
         formattedInfo.append("Serial Number: ").append(toy.getSerialNumber())
@@ -61,7 +86,12 @@ public class FormatToyInfo {
 
         return formattedInfo.toString();
     }
-
+    /**
+     * Formats the information for a Puzzle toy.
+     *
+     * @param toy The Puzzle toy to format.
+     * @return A formatted string containing information about the Puzzle toy.
+     */
     private static String formatPuzzle(Puzzle toy) {
         StringBuilder formattedInfo = new StringBuilder("Category: Puzzle, ");
         formattedInfo.append("Serial Number: ").append(toy.getSerialNumber())
@@ -76,57 +106,3 @@ public class FormatToyInfo {
     }
 }
 
-//public class FormatToyInfo {
-//    public static String format(String category, String[] fields) {
-//        StringBuilder formattedInfo = new StringBuilder("Category: " + category + ", ");
-//
-//        switch (category.toLowerCase()) {
-//            case "boardgame":
-//                formattedInfo.append("Serial Number: ").append(fields[0])
-//                        .append(", Name: ").append(fields[1])
-//                        .append(", Brand: ").append(fields[2])
-//                        .append(", Price: ").append(fields[3])
-//                        .append(", Available Count: ").append(fields[4])
-//                        .append(", Age Appropriate: ").append(fields[5])
-//                        .append(", Num Of Players: ").append(fields[6])
-//                        .append(", Author: ").append(fields[7]);
-//                break;
-//            case "figure":
-//                formattedInfo.append("Serial Number: ").append(fields[0])
-//                        .append(", Name: ").append(fields[1])
-//                        .append(", Brand: ").append(fields[2])
-//                        .append(", Price: ").append(fields[3])
-//                        .append(", Available Count: ").append(fields[4])
-//                        .append(", Age Appropriate: ").append(fields[5])
-//                        .append(", Classification: ").append(fields[6]);
-//                break;
-//            case "animal":
-//                formattedInfo.append("Serial Number: ").append(fields[0])
-//                        .append(", Name: ").append(fields[1])
-//                        .append(", Brand: ").append(fields[2])
-//                        .append(", Price: ").append(fields[3])
-//                        .append(", Available Count: ").append(fields[4])
-//                        .append(", Age Appropriate: ").append(fields[5])
-//                        .append(", Material: ").append(fields[6])
-//                        .append(", Size: ").append(fields[7]);
-//                break;
-//            case "puzzle":
-//                formattedInfo.append("Serial Number: ").append(fields[0])
-//                        .append(", Name: ").append(fields[1])
-//                        .append(", Brand: ").append(fields[2])
-//                        .append(", Price: ").append(fields[3])
-//                        .append(", Available Count: ").append(fields[4])
-//                        .append(", Age Appropriate: ").append(fields[5])
-//                        .append(", Puzzle Type: ").append(fields[6]);
-//                break;
-//            default:
-//                // Handle unknown category
-//                formattedInfo.append("Unknown category. Additional details not provided.");
-//                break;
-//        }
-//
-//        return formattedInfo.toString();
-//    }
-//
-//	
-//}
