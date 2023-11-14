@@ -49,25 +49,13 @@ public class AppManager {
             option = appMenu.mainMenu();
             switch (option) {
                 case 1:
-                    int choice = appMenu.subMenu();
-                    switch (choice) {
-                        case 1:
-                            searchBySerialNumber();
+                    
+                    
+                    
+                    	launchSecondApplication();
                             break;
-                        case 2:
-                            searchByToyName();
-                            break;
-                        case 3:
-                            searchByType();
-                            break;
-                        case 4:
-                            // The user wants to go back to the main menu, no action needed here
-                            break;
-                        default:
-                            System.out.println("Invalid");
-                            break;
-                    }
-                    break;
+                    
+                   
                 case 2:
                     addToy();
                     break;
@@ -84,6 +72,38 @@ public class AppManager {
             }
         }
     }
+    
+    private void launchSecondApplication() {
+        boolean flag = true;
+        int choice;
+
+        while (flag) {
+            choice = appMenu.subMenu();
+            switch (choice) {
+                
+                        case 1:
+                            searchBySerialNumber();
+                            break;
+                        case 2:
+                            searchByToyName();
+                            break;
+                        case 3:
+                            searchByType();
+                            break;
+                            
+                        case 4:
+                        	flag = false;
+                            break;
+                        default:
+                            System.out.println("Invalid");
+                            break;
+                    }
+                    
+                
+                    
+            }
+        }
+    
     /**
      * Searches for toys based on their type.
      */
@@ -138,7 +158,7 @@ public class AppManager {
                         System.out.print("\nPress Enter to Continue...");
                         input.nextLine(); // Consume the newline character
                         input.nextLine(); // Wait for Enter key press
-                        appMenu.subMenu();
+                        
                         returnToSearch = false;
                     } else if (userOption == searchResults.size()) {
                         // User selected "Back to Main Menu"
@@ -205,9 +225,16 @@ public class AppManager {
                   System.out.println("The Transaction Successfully Terminated!");
                   // You can add purchase logic here
                   System.out.print("\nPress Enter to Continue...");
+                  
+                  
                   input.nextLine(); // Consume the newline character
                   input.nextLine(); // Wait for Enter key press
-                  appMenu.subMenu();
+                  
+
+
+                  
+                  
+                  
                   returnToSearch = false;
               } else if (userOption == searchResults.size()) {
                   // User selected "Back to Main Menu"
@@ -284,7 +311,7 @@ public class AppManager {
                                 System.out.print("\nPress Enter to Continue...");
                                 input.nextLine(); // Consume the newline character
                                 input.nextLine(); // Wait for Enter key press
-                                appMenu.subMenu();
+                               
                                 returnToSearch = false;
                             } else if (userOption == searchResults.size()) {
                                 // User selected "Back to Main Menu"
@@ -430,7 +457,7 @@ public class AppManager {
      */
     private void removeToy() {
         Scanner input = new Scanner(System.in);
-        System.out.println("Removing a Toy");
+        
 
         long serialNumberRemoval;
 
@@ -519,7 +546,11 @@ public class AppManager {
     private String categorizeSerialNumber(long serialNumber) {
         String category;
 
-        int firstDigit = Integer.parseInt(String.valueOf(serialNumber).substring(0, 1));
+     // Format the serial number as a 10-digit decimal with leading zeros
+        String serialString = String.format("%010d", serialNumber);
+
+        // Extract the first digit
+        int firstDigit = Integer.parseInt(serialString.substring(0, 1));
 
         switch (firstDigit) {
             case 0:
